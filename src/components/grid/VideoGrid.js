@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import VideoGridItem from "./VideoGridItem";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchVideos } from "../../rtk/features/videos/videoSlice";
+import { fetchVideos } from "../../rtk/features/videos/videosSlice";
 import Loading from "../ui/Loading";
 
 const VideoGrid = () => {
@@ -9,14 +9,15 @@ const VideoGrid = () => {
   const { videos, isLoading, isError, error } = useSelector(
     (state) => state.videos
   );
+  const { tags, search } = useSelector((state) => state.filter);
 
   useEffect(() => {
-    dispatch(fetchVideos());
-  }, [dispatch]);
+    dispatch(fetchVideos({ tags, search }));
+  }, [dispatch, tags, search]);
 
   let content;
   if (isLoading) content = <Loading />;
-  if (isLoading && isError) {
+  if (!isLoading && isError) {
     content = <div className="col-span-12">{error}</div>;
   }
   if (!isLoading && !isError && videos?.length === 0) {
